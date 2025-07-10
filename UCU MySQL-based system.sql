@@ -1,5 +1,3 @@
-drop database MySQL_database;
-
 Create database MySQL_database;
 Show databases;
 use MySQL_database;
