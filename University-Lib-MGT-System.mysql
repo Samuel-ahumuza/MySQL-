@@ -1,0 +1,68 @@
+ MEMBER Table
+CREATE TABLE MEMBER (
+    Member_ID VARCHAR(15) PRIMARY KEY, -- PK, e.g., Student/Staff ID
+    Name VARCHAR(100) NOT NULL,
+    Address VARCHAR(255),
+    Phone_no VARCHAR(20),
+    Email VARCHAR(100) UNIQUE,
+    Membership_Type VARCHAR(50) NOT NULL,
+    Expiring_Date DATE
+);
+
+SUPPLIER Table 
+CREATE TABLE SUPPLIER (
+    Supplier_ID INT PRIMARY KEY AUTO_INCREMENT, -- PK
+    Name VARCHAR(100) NOT NULL,
+    Contact_Info VARCHAR(255),
+    Address VARCHAR(255)
+);
+
+BOOK Table 
+CREATE TABLE BOOK (
+    Book_ID VARCHAR(20) PRIMARY KEY, -- PK, e.g., ISBN or Accession No.
+    Title VARCHAR(255) NOT NULL,
+    Author_Name VARCHAR(150) NOT NULL,
+    Publisher_Name VARCHAR(150),
+    Edition VARCHAR(50),
+    No_of_Copies INT NOT NULL DEFAULT 0 CHECK (No_of_Copies >= 0), -- Must be non-negative
+    Cost_per_Copy DECIMAL(10, 2)
+);
+
+PURCHASE_ORDER (PO) Table
+CREATE TABLE PURCHASE_ORDER (
+    PO_ID INT PRIMARY KEY AUTO_INCREMENT, -- PK
+    Order_Date DATE NOT NULL,
+    Expected_Delivery_Date DATE,
+    Status VARCHAR(50) NOT NULL,
+    Total_Cost DECIMAL(12, 2),
+    Supplier_ID INT NOT NULL, -- FK to SUPPLIER
+
+    FOREIGN KEY (Supplier_ID) REFERENCES SUPPLIER(Supplier_ID)
+);
+
+PO_ITEM Table 
+Composite PK (PO_ID, Book_ID) links PO and BOOK (Identifying Relationship)
+CREATE TABLE PO_ITEM (
+    PO_ID INT NOT NULL, -- PK, FK
+    Book_ID VARCHAR(20) NOT NULL, -- PK, FK
+    Quantity INT NOT NULL CHECK (Quantity > 0),
+    Unit_Cost DECIMAL(10, 2) NOT NULL,
+
+    PRIMARY KEY (PO_ID, Book_ID),
+    FOREIGN KEY (PO_ID) REFERENCES PURCHASE_ORDER(PO_ID),
+    FOREIGN KEY (Book_ID) REFERENCES BOOK(Book_ID)
+);
+
+LOAN Table 
+CREATE TABLE LOAN (
+    Serial_no BIGINT PRIMARY KEY AUTO_INCREMENT, -- PK, Surrogate Key
+    Date_of_Issuance DATE NOT NULL,
+    Due_Date DATE NOT NULL,
+    Return_Date DATE, -- Nullable until returned
+    Fine_Amount DECIMAL(8, 2) DEFAULT 0.00,
+    Member_ID VARCHAR(15) NOT NULL, -- FK to MEMBER
+    Book_ID VARCHAR(20) NOT NULL, -- FK to BOOK
+
+    FOREIGN KEY (Member_ID) REFERENCES MEMBER(Member_ID),
+    FOREIGN KEY (Book_ID) REFERENCES BOOK(Book_ID)
+);
