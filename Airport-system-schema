@@ -1,0 +1,145 @@
+-- 1. Airports Table
+CREATE TABLE Airports (
+    airport_code CHAR(3) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    city VARCHAR(50) NOT NULL,
+    country VARCHAR(50) NOT NULL,
+    timezone_offset DECIMAL(2, 0) -- e.g., 5 for UTC+5
+);
+
+--------------------------------------------------
+
+-- 2. Airlines Table
+CREATE TABLE Airlines (
+    airline_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    iata_code CHAR(2) NOT NULL UNIQUE,
+    contact_number VARCHAR(20)
+);
+
+--------------------------------------------------
+
+-- 3. Aircrafts Table
+CREATE TABLE Aircrafts (
+    aircraft_id INT PRIMARY KEY AUTO_INCREMENT,
+    model VARCHAR(50) NOT NULL,
+    capacity INT NOT NULL,
+    airline_id INT,
+    FOREIGN KEY (airline_id) REFERENCES Airlines(airline_id)
+);
+
+--------------------------------------------------
+
+-- 4. Flights Table
+CREATE TABLE Flights (
+    flight_number VARCHAR(10) PRIMARY KEY,
+    departure_airport_code CHAR(3) NOT NULL,
+    arrival_airport_code CHAR(3) NOT NULL,
+    airline_id INT NOT NULL,
+    aircraft_id INT NOT NULL,
+    departure_time DATETIME NOT NULL,
+    arrival_time DATETIME NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    
+    FOREIGN KEY (departure_airport_code) REFERENCES Airports(airport_code),
+    FOREIGN KEY (arrival_airport_code) REFERENCES Airports(airport_code),
+    FOREIGN KEY (airline_id) REFERENCES Airlines(airline_id),
+    FOREIGN KEY (aircraft_id) REFERENCES Aircrafts(aircraft_id),
+
+    -- Constraint to prevent flights to and from the same airport
+    CHECK (departure_airport_code <> arrival_airport_code)
+);
+
+--------------------------------------------------
+
+-- 5. Passengers Table
+CREATE TABLE Passengers (
+    passenger_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    date_of_birth DATE,
+    nationality VARCHAR(50),
+    email VARCHAR(100) UNIQUE
+);
+
+--------------------------------------------------
+
+-- 6. Bookings Table (Junction Table for Flights and Passengers)
+CREATE TABLE Bookings (
+    booking_id INT PRIMARY KEY AUTO_INCREMENT,
+    flight_number VARCHAR(10) NOT NULL,
+    passenger_id INT NOT NULL,
+    booking_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    seat_number VARCHAR(5),
+    class_type ENUM('Economy', 'Business', 'First') NOT NULL,
+
+    FOREIGN KEY (flight_number) REFERENCES Flights(flight_number),
+    FOREIGN KEY (passenger_id) REFERENCES Passengers(passenger_id),
+
+    -- Ensure a passenger can only be booked once per flight
+    UNIQUE (flight_number, passenger_id)
+);
+
+-- Insert into Airports
+INSERT INTO Airports (airport_code, name, city, country, timezone_offset) VALUES
+('JFK', 'John F. Kennedy Intl.', 'New York', 'USA', -5),
+('LHR', 'Heathrow Airport', 'London', 'UK', 0),
+('DXB', 'Dubai Intl.', 'Dubai', 'UAE', 4);
+
+--------------------------------------------------
+
+-- Insert into Airlines
+INSERT INTO Airlines (name, iata_code, contact_number) VALUES
+('Global Air', 'GA', '1-800-111-2222'),
+('Oceanic Jets', 'OJ', '1-800-333-4444');
+
+--------------------------------------------------
+
+-- Insert into Aircrafts
+INSERT INTO Aircrafts (model, capacity, airline_id) VALUES
+('Boeing 747', 416, 1),
+('Airbus A380', 550, 2);
+
+--------------------------------------------------
+
+-- Insert into Flights
+INSERT INTO Flights (flight_number, departure_airport_code, arrival_airport_code, airline_id, aircraft_id, departure_time, arrival_time, price) VALUES
+('GA101', 'JFK', 'LHR', 1, 1, '2025-11-15 08:00:00', '2025-11-15 18:00:00', 650.00),
+('OJ202', 'LHR', 'DXB', 2, 2, '2025-11-16 10:30:00', '2025-11-16 20:30:00', 800.50);
+
+--------------------------------------------------
+
+-- Insert into Passengers
+INSERT INTO Passengers (first_name, last_name, date_of_birth, nationality, email) VALUES
+('Alice', 'Johnson', '1990-05-15', 'American', 'alice.j@example.com'),
+('Bob', 'Smith', '1985-12-01', 'British', 'bob.s@example.com');
+
+--------------------------------------------------
+
+-- Insert into Bookings
+INSERT INTO Bookings (flight_number, passenger_id, seat_number, class_type) VALUES
+('GA101', 1, '12A', 'Business'),
+('OJ202', 2, '35D', 'Economy');
+
+SELECT 
+    p.first_name, 
+    p.last_name, 
+    b.seat_number, 
+    b.class_type
+FROM 
+    Passengers p
+JOIN 
+    Bookings b ON p.passenger_id = b.passenger_id
+WHERE 
+    b.flight_number = 'GA101';
+SELECT 
+    f.flight_number, 
+    a.name AS airline_name, 
+    f.departure_time, 
+    f.price
+FROM 
+    Flights f
+JOIN 
+    Airlines a ON f.airline_id = a.airline_id
+WHERE 
+    f.departure_airport_code = 'JFK';-
