@@ -80,25 +80,50 @@ CREATE TABLE Bookings (
     UNIQUE (flight_number, passenger_id)
 );
 
--- Insert into Airports
 INSERT INTO Airports (airport_code, name, city, country, timezone_offset) VALUES
-('JFK', 'John F. Kennedy Intl.', 'New York', 'USA', -5),
-('LHR', 'Heathrow Airport', 'London', 'UK', 0),
+('EBB', 'Entebbe Intl. Airport', 'Kampala', 'UGANDA', +3),
+('KGL', 'Kigali Intl. Airport', 'Kigali', 'RWANDA', +2),
 ('DXB', 'Dubai Intl.', 'Dubai', 'UAE', 4);
 
 --------------------------------------------------
-
--- Insert into Airlines
 INSERT INTO Airlines (name, iata_code, contact_number) VALUES
-('Global Air', 'GA', '1-800-111-2222'),
-('Oceanic Jets', 'OJ', '1-800-333-4444');
+('Emirates', 'EK', '+971 600 555 555'),        -- airline_id = 1
+('flydubai', 'FZ', '+971 600 544 400'),        -- airline_id = 2
+('Uganda Airlines', 'UR', '+256 200 406 400'), -- airline_id = 3
+('RwandAir', 'WB', '+250 788 177 000'),        -- airline_id = 4
+('Kenya Airways', 'KQ', '+254 711 021 000'),   -- airline_id = 5
+('Qatar Airways', 'QR', '+974 4022 6000');     -- airline_id = 6
+
+-- Airlines operating at Kigali (KGL)
+('RwandAir', 'WB', '+250 788 177 000'), -- Rwanda's national carrier and KGL hub
+('Kenya Airways', 'KQ', '+254 711 021 000'), -- Major regional connection to KGL
+('Qatar Airways', 'QR', '+974 4022 6000'); -- Major international connection to KGL
+;
 
 --------------------------------------------------
 
--- Insert into Aircrafts
-INSERT INTO Aircrafts (model, capacity, airline_id) VALUES
-('Boeing 747', 416, 1),
-('Airbus A380', 550, 2);
+-- Assuming airline_id 1-6 from the previous step
+INSERT INTO Aircrafts (airline_id, model, capacity) VALUES
+-- Emirates (airline_id 1)
+(1, 'Boeing 777-300ER', 360),
+(1, 'Airbus A380-800', 484),
+
+-- flydubai (airline_id 2)
+(2, 'Boeing 737 MAX 8', 170),
+
+-- Uganda Airlines (airline_id 3)
+(3, 'Airbus A330-800neo', 260),
+(3, 'Bombardier CRJ-900', 76),
+
+-- RwandAir (airline_id 4)
+(4, 'Airbus A330-300', 274),
+(4, 'Boeing 737-800', 154),
+
+-- Kenya Airways (airline_id 5)
+(5, 'Boeing 787-8 Dreamliner', 234),
+
+-- Qatar Airways (airline_id 6)
+(6, 'Boeing 787-9 Dreamliner', 311);
 
 --------------------------------------------------
 
