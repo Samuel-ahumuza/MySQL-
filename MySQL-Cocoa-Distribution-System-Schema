@@ -1,0 +1,149 @@
+-- 1. Farmers Table (Suppliers of Cocoa)
+CREATE TABLE Farmers (
+    farmer_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    farm_location VARCHAR(100) NOT NULL,
+    contact_number VARCHAR(20),
+    email VARCHAR(100) UNIQUE,
+    registration_date DATE DEFAULT (CURRENT_DATE)
+);
+
+--------------------------------------------------
+
+-- 2. CocoaBatches Table (The Inventory of purchased cocoa)
+CREATE TABLE CocoaBatches (
+    batch_id INT PRIMARY KEY AUTO_INCREMENT,
+    farmer_id INT NOT NULL,
+    purchase_date DATETIME NOT NULL,
+    net_weight_kg DECIMAL(10, 2) NOT NULL,
+    purchase_price_per_kg DECIMAL(10, 2) NOT NULL,
+    is_sold BOOLEAN DEFAULT FALSE,
+    storage_location VARCHAR(50), -- e.g., "Warehouse A - Bay 3"
+    
+    FOREIGN KEY (farmer_id) REFERENCES Farmers(farmer_id)
+);
+
+--------------------------------------------------
+
+-- 3. QualityChecks Table (For tracking cocoa quality)
+CREATE TABLE QualityChecks (
+    check_id INT PRIMARY KEY AUTO_INCREMENT,
+    batch_id INT NOT NULL,
+    check_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    moisture_level DECIMAL(5, 2), -- Percentage
+    fermentation_score INT, -- 1-5 scale, for example
+    is_acceptable BOOLEAN NOT NULL,
+    inspector_name VARCHAR(100),
+    
+    FOREIGN KEY (batch_id) REFERENCES CocoaBatches(batch_id)
+);
+
+--------------------------------------------------
+
+-- 4. Manufacturers Table (The Buyers of processed cocoa)
+CREATE TABLE Manufacturers (
+    manufacturer_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    contact_person VARCHAR(100),
+    address VARCHAR(200),
+    industry VARCHAR(50) -- e.g., "Chocolate", "Cosmetics"
+);
+
+--------------------------------------------------
+
+-- 5. SalesOrders Table (Tracking sales to manufacturers)
+CREATE TABLE SalesOrders (
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    manufacturer_id INT NOT NULL,
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total_weight_kg DECIMAL(10, 2) NOT NULL,
+    selling_price_per_kg DECIMAL(10, 2) NOT NULL,
+    shipment_date DATE,
+    
+    FOREIGN KEY (manufacturer_id) REFERENCES Manufacturers(manufacturer_id)
+);
+
+--------------------------------------------------
+
+-- 6. OrderDetails Table (Linking specific batches to a sales order)
+CREATE TABLE OrderDetails (
+    order_detail_id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT NOT NULL,
+    batch_id INT NOT NULL,
+    weight_shipped_kg DECIMAL(10, 2) NOT NULL,
+    
+    FOREIGN KEY (order_id) REFERENCES SalesOrders(order_id),
+    FOREIGN KEY (batch_id) REFERENCES CocoaBatches(batch_id),
+    
+    -- Ensure a batch is only listed once per order
+    UNIQUE (order_id, batch_id)
+);
+-- Insert into Farmers
+INSERT INTO Farmers (first_name, last_name, farm_location, contact_number) VALUES
+('Kwame', 'Nkrumah', 'Eastern Region', '555-0101'),
+('Aisha', 'Hassan', 'Central Region', '555-0102');
+
+--------------------------------------------------
+
+-- Insert into CocoaBatches (Kwame sells 500kg, Aisha sells 750kg)
+INSERT INTO CocoaBatches (farmer_id, purchase_date, net_weight_kg, purchase_price_per_kg) VALUES
+(1, '2025-10-20 09:30:00', 500.00, 2.50),
+(2, '2025-10-21 11:45:00', 750.00, 2.60);
+
+--------------------------------------------------
+
+-- Insert into QualityChecks (Check Batch 1 and 2)
+INSERT INTO QualityChecks (batch_id, moisture_level, fermentation_score, is_acceptable, inspector_name) VALUES
+(1, 7.5, 4, TRUE, 'Mr. Appiah'),
+(2, 8.1, 5, TRUE, 'Mr. Appiah');
+
+--------------------------------------------------
+
+-- Insert into Manufacturers
+INSERT INTO Manufacturers (name, contact_person, industry) VALUES
+('Global Chocolates Ltd.', 'John Doe', 'Chocolate'),
+('Cocoa Cosmetics Inc.', 'Jane Smith', 'Cosmetics');
+
+--------------------------------------------------
+
+-- Insert into SalesOrders (Sale to Global Chocolates)
+INSERT INTO SalesOrders (manufacturer_id, total_weight_kg, selling_price_per_kg, shipment_date) VALUES
+(1, 1000.00, 4.00, '2025-11-01');
+
+--------------------------------------------------
+
+-- Insert into OrderDetails (Use both batches to fulfill the 1000kg order)
+INSERT INTO OrderDetails (order_id, batch_id, weight_shipped_kg) VALUES
+(1, 1, 500.00), -- All of Batch 1
+(1, 2, 500.00); -- 500kg of Batch 2
+
+-- Update CocoaBatches to reflect sales
+UPDATE CocoaBatches
+SET is_sold = TRUE
+WHERE batch_id IN (1, 2);
+
+--Calculate the total cost of purchasing a specific batch
+SELECT 
+    batch_id, 
+    net_weight_kg * purchase_price_per_kg AS total_purchase_cost
+FROM 
+    CocoaBatches
+WHERE 
+    batch_id = 1;
+--Find all farmers who supplied cocoa that was sold to a specific manufacturer (e.g., Global Chocolates Ltd.):
+SELECT DISTINCT
+    f.first_name, 
+    f.last_name
+FROM 
+    Farmers f
+JOIN 
+    CocoaBatches cb ON f.farmer_id = cb.farmer_id
+JOIN 
+    OrderDetails od ON cb.batch_id = od.batch_id
+JOIN 
+    SalesOrders so ON od.order_id = so.order_id
+JOIN 
+    Manufacturers m ON so.manufacturer_id = m.manufacturer_id
+WHERE 
+    m.name = 'Global Chocolates Ltd.';
