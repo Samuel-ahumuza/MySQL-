@@ -99,3 +99,84 @@ CREATE TABLE CITIZEN_EDUCATION (
     FOREIGN KEY (Citizen_ID) REFERENCES CITIZEN(Citizen_ID),
     FOREIGN KEY (Edu_ID) REFERENCES EDUCATION_LEVEL(Edu_ID)
 );
+
+USE ubos_census_db;
+
+-- 1. Insert data into DISTRICT
+INSERT INTO DISTRICT (District_ID, District_Name) VALUES
+(10, 'Kampala'),
+(20, 'Mukono');
+
+-- 2. Insert data into SUBCOUNTY
+INSERT INTO SUBCOUNTY (SubCounty_ID, SubCounty_Name, District_ID) VALUES
+(101, 'Central Division', 10),
+(201, 'Ggaba Division', 10),
+(301, 'Central Mukono', 20);
+
+-- 3. Insert data into PARISH
+INSERT INTO PARISH (Parish_ID, Parish_Name, SubCounty_ID) VALUES
+(1001, 'Nakasero I', 101),
+(1002, 'Kisenyi II', 201),
+(2001, 'Kiwanga', 301);
+
+-- 4. Insert data into HOMESTEAD
+INSERT INTO HOMESTEAD (Homestead_ID, Residence_Address, Parish_ID) VALUES
+(1, 'Plot 14 Acacia Ave', 1001), -- Kampala, Nakasero I
+(2, 'House 34 Kisenyi Rd', 1002), -- Kampala, Kisenyi II
+(3, 'Block 7 Kyaggwe', 2001);  -- Mukono, Kiwanga
+
+-- 5. Insert data into EMPLOYER
+INSERT INTO EMPLOYER (Employer_ID, Employer_Name, Industry_Type) VALUES
+(501, 'Uganda Telecom Ltd', 'Telecommunications'),
+(502, 'Makerere University', 'Education'),
+(503, 'Self-Employed (Trading)', 'Retail');
+
+-- 6. Insert data into CITIZEN
+INSERT INTO CITIZEN (Citizen_ID, Name, Date_of_Birth, Employment_Status, Homestead_ID, Employer_ID) VALUES
+-- Employed, living in Homestead 1
+(10001, 'Alex Ssekiboobo', '1985-05-15', 'Employed', 1, 501),
+-- Employed, living in Homestead 1
+(10002, 'Sarah Nantale', '1990-10-20', 'Employed', 1, 502),
+-- Unemployed, living in Homestead 2
+(10003, 'David Kabanda', '1970-01-01', 'Unemployed', 2, NULL),
+-- Self-Employed, living in Homestead 3 (Employer ID is 503 for tracking purposes)
+(10004, 'Miriam Nabisere', '1995-03-25', 'Self-Employed', 3, 503);
+
+-- 7. Insert data into DEPENDENT
+INSERT INTO DEPENDENT (Dependent_ID, Dependent_Name, Citizen_ID) VALUES
+(1, 'Ben Ssekiboobo (Son)', 10001),
+(2, 'Faith Nantale (Daughter)', 10002);
+
+-- 8. Insert data into INCOME_SOURCE
+INSERT INTO INCOME_SOURCE (Source_ID, Source_Description) VALUES
+(1, 'Salary/Wages'),
+(2, 'Rental Income'),
+(3, 'Business Profits'),
+(4, 'Remittance/Support');
+
+-- 9. Insert data into CITIZEN_INCOME (Many-to-Many)
+INSERT INTO CITIZEN_INCOME (Citizen_ID, Source_ID, Amount) VALUES
+(10001, 1, 3500000.00), -- Alex: Salary
+(10001, 2, 800000.00), -- Alex: Rental
+(10002, 1, 2000000.00), -- Sarah: Salary
+(10004, 3, 1500000.00), -- Miriam: Business Profits
+(10003, 4, 300000.00);  -- David: Support
+
+-- 10. Insert data into EDUCATION_LEVEL
+INSERT INTO EDUCATION_LEVEL (Edu_ID, Level_Name) VALUES
+(10, 'Primary School'),
+(20, 'O-Level (Secondary)'),
+(30, 'A-Level (High School)'),
+(40, 'University Degree'),
+(50, 'Post-Graduate');
+
+-- 11. Insert data into CITIZEN_EDUCATION (Many-to-Many)
+INSERT INTO CITIZEN_EDUCATION (Citizen_ID, Edu_ID, Year_Completed) VALUES
+-- Alex's education
+(10001, 20, 2002),
+(10001, 40, 2007),
+-- Sarah's education
+(10002, 30, 2008),
+(10002, 40, 2012),
+-- David's education
+(10003, 10, 1985);
