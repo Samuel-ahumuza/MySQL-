@@ -1,0 +1,101 @@
+-- 1. Create the database
+CREATE DATABASE ubos_census_db;
+USE ubos_census_db;
+
+-- 2. Create Geographical Hierarchy Tables (DISTRICT, SUBCOUNTY, PARISH)
+
+CREATE TABLE DISTRICT (
+    District_ID INT PRIMARY KEY,
+    District_Name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE SUBCOUNTY (
+    SubCounty_ID INT PRIMARY KEY,
+    SubCounty_Name VARCHAR(100) NOT NULL,
+    District_ID INT NOT NULL,
+    FOREIGN KEY (District_ID) REFERENCES DISTRICT(District_ID)
+);
+
+CREATE TABLE PARISH (
+    Parish_ID INT PRIMARY KEY,
+    Parish_Name VARCHAR(100) NOT NULL,
+    SubCounty_ID INT NOT NULL,
+    FOREIGN KEY (SubCounty_ID) REFERENCES SUBCOUNTY(SubCounty_ID)
+);
+
+-- 3. Create HOMESTEAD Table (Linked to PARISH)
+
+CREATE TABLE HOMESTEAD (
+    Homestead_ID INT PRIMARY KEY,
+    Residence_Address VARCHAR(255),
+    Parish_ID INT NOT NULL,
+    FOREIGN KEY (Parish_ID) REFERENCES PARISH(Parish_ID)
+);
+
+-- 4. Create EMPLOYER Table
+
+CREATE TABLE EMPLOYER (
+    Employer_ID INT PRIMARY KEY,
+    Employer_Name VARCHAR(255) NOT NULL UNIQUE,
+    Industry_Type VARCHAR(100)
+);
+
+-- 5. Create CITIZEN Table (Core Entity)
+
+CREATE TABLE CITIZEN (
+    Citizen_ID INT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Date_of_Birth DATE,
+    Employment_Status ENUM('Employed', 'Unemployed', 'Self-Employed', 'Student', 'Retired') NOT NULL,
+    
+    -- Foreign Keys
+    Homestead_ID INT NOT NULL,
+    Employer_ID INT, -- NULL is allowed for unemployed or self-employed
+    
+    FOREIGN KEY (Homestead_ID) REFERENCES HOMESTEAD(Homestead_ID),
+    FOREIGN KEY (Employer_ID) REFERENCES EMPLOYER(Employer_ID)
+);
+
+-- 6. Create DEPENDENT Table (One-to-Many with CITIZEN)
+
+CREATE TABLE DEPENDENT (
+    Dependent_ID INT PRIMARY KEY,
+    Dependent_Name VARCHAR(255) NOT NULL,
+    Citizen_ID INT NOT NULL, -- The citizen supporting this dependent
+    
+    FOREIGN KEY (Citizen_ID) REFERENCES CITIZEN(Citizen_ID)
+);
+
+-- 7. Create INCOME_SOURCE and junction table CITIZEN_INCOME (Many-to-Many)
+
+CREATE TABLE INCOME_SOURCE (
+    Source_ID INT PRIMARY KEY,
+    Source_Description VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE CITIZEN_INCOME (
+    Citizen_ID INT NOT NULL,
+    Source_ID INT NOT NULL,
+    Amount DECIMAL(15, 2) NOT NULL,
+    
+    PRIMARY KEY (Citizen_ID, Source_ID), -- Composite Primary Key
+    FOREIGN KEY (Citizen_ID) REFERENCES CITIZEN(Citizen_ID),
+    FOREIGN KEY (Source_ID) REFERENCES INCOME_SOURCE(Source_ID)
+);
+
+-- 8. Create EDUCATION_LEVEL and junction table CITIZEN_EDUCATION (Many-to-Many)
+
+CREATE TABLE EDUCATION_LEVEL (
+    Edu_ID INT PRIMARY KEY,
+    Level_Name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE CITIZEN_EDUCATION (
+    Citizen_ID INT NOT NULL,
+    Edu_ID INT NOT NULL,
+    Year_Completed YEAR,
+    
+    PRIMARY KEY (Citizen_ID, Edu_ID), -- Composite Primary Key
+    FOREIGN KEY (Citizen_ID) REFERENCES CITIZEN(Citizen_ID),
+    FOREIGN KEY (Edu_ID) REFERENCES EDUCATION_LEVEL(Edu_ID)
+);
