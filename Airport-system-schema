@@ -128,15 +128,38 @@ INSERT INTO Aircrafts (airline_id, model, capacity) VALUES
 
 -- Insert into Flights
 INSERT INTO Flights (flight_number, departure_airport_code, arrival_airport_code, airline_id, aircraft_id, departure_time, arrival_time, price) VALUES
-('GA101', 'JFK', 'LHR', 1, 1, '2025-11-15 08:00:00', '2025-11-15 18:00:00', 650.00),
-('OJ202', 'LHR', 'DXB', 2, 2, '2025-11-16 10:30:00', '2025-11-16 20:30:00', 800.50);
+-- DUBAI (DXB) <> ENTEBBE (EBB)
+-- EK 730: DXB to EBB (Emirates, B777-300ER, ID 1)
+('EK 730', 'DXB', 'EBB', 1, 1, '2025-11-20 09:00:00', '2025-11-20 13:30:00', 650.00), 
+-- UR 440: EBB to DXB (Uganda Airlines, A330-800neo, ID 4)
+('UR 440', 'EBB', 'DXB', 3, 4, '2025-11-20 16:00:00', '2025-11-20 22:30:00', 580.00), 
+-- FZ 637: DXB to EBB (flydubai, B737 MAX 8, ID 3)
+('FZ 637', 'DXB', 'EBB', 2, 3, '2025-11-21 00:30:00', '2025-11-21 05:00:00', 350.00),
+
+-- KIGALI (KGL) <> DUBAI (DXB)
+-- WB 302: KGL to DXB (RwandAir, A330-300, ID 6)
+('WB 302', 'KGL', 'DXB', 4, 6, '2025-11-22 08:30:00', '2025-11-22 15:50:00', 520.00), 
+-- QR 1387: DXB to KGL (Qatar Airways, B787-9, ID 9 - one-stop via DOH is common)
+('QR 1387', 'DXB', 'KGL', 6, 9, '2025-11-22 18:00:00', '2025-11-23 00:45:00', 680.00), 
+
+-- KIGALI (KGL) <> ENTEBBE (EBB) - Regional Flights
+-- UR 202: EBB to KGL (Uganda Airlines, CRJ-900, ID 5)
+('UR 202', 'EBB', 'KGL', 3, 5, '2025-11-23 07:00:00', '2025-11-23 08:00:00', 120.00),
+-- KQ 402: KGL to EBB (Kenya Airways, B787-8, ID 8 - a widebody on this route for a short time)
+('KQ 402', 'KGL', 'EBB', 5, 8, '2025-11-23 11:30:00', '2025-11-23 12:30:00', 145.00),
+-- WB 400: KGL to EBB (RwandAir, B737-800, ID 7)
+('WB 400', 'KGL', 'EBB', 4, 7, '2025-11-24 18:00:00', '2025-11-24 19:00:00', 130.00);
 
 --------------------------------------------------
 
 -- Insert into Passengers
 INSERT INTO Passengers (first_name, last_name, date_of_birth, nationality, email) VALUES
-('Alice', 'Johnson', '1990-05-15', 'American', 'alicejohn@gmail.com'),
-('Bob', 'Smith', '1985-12-01', 'British', 'bobsmith34@gmail.com');
+INSERT INTO Passengers (first_name, last_name, date_of_birth, nationality, email) VALUES
+('Ahmed', 'Al Marzooqi', '1985-05-15', 'UAE', 'ahmed.almarzooqi@mail.com'),    
+('Grace', 'Nassuna', '1992-10-21', 'Ugandan', 'grace.nassuna@email.com'),    
+('Jean-Claude', 'Munyaneza', '1978-01-03', 'Rwandan', 'jeanclaude.m@kgl.net'),  
+('Sarah', 'Ochieng', '2001-07-28', 'Kenyan', 'sarah.ochieng@webmail.org'),       
+('David', 'Patel', '1965-03-10', 'British', 'david.patel@global.co');           
 
 --------------------------------------------------
 
