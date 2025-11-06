@@ -84,9 +84,6 @@ INSERT INTO Airports (airport_code, name, city, country, timezone_offset) VALUES
 ('EBB', 'Entebbe Intl. Airport', 'Kampala', 'UGANDA', +3),
 ('KGL', 'Kigali Intl. Airport', 'Kigali', 'RWANDA', +2),
 ('DXB', 'Dubai Intl.', 'Dubai', 'UAE', 4);
-
---------------------------------------------------
-INSERT INTO Airlines (name, iata_code, contact_number) VALUES
 ('Emirates', 'EK', '+971 600 555 555'),        -- airline_id = 1
 ('flydubai', 'FZ', '+971 600 544 400'),        -- airline_id = 2
 ('Uganda Airlines', 'UR', '+256 200 406 400'), -- airline_id = 3
@@ -154,7 +151,7 @@ INSERT INTO Flights (flight_number, departure_airport_code, arrival_airport_code
 
 -- Insert into Passengers
 INSERT INTO Passengers (first_name, last_name, date_of_birth, nationality, email) VALUES
-INSERT INTO Passengers (first_name, last_name, date_of_birth, nationality, email) VALUES
+
 ('Ahmed', 'Al Marzooqi', '1985-05-15', 'UAE', 'ahmed.almarzooqi@mail.com'),    
 ('Grace', 'Nassuna', '1992-10-21', 'Ugandan', 'grace.nassuna@email.com'),    
 ('Jean-Claude', 'Munyaneza', '1978-01-03', 'Rwandan', 'jeanclaude.m@kgl.net'),  
