@@ -163,10 +163,20 @@ INSERT INTO Passengers (first_name, last_name, date_of_birth, nationality, email
 
 --------------------------------------------------
 
--- Insert into Bookings
-INSERT INTO Bookings (flight_number, passenger_id, seat_number, class_type) VALUES
-('GA101', 1, '12A', 'Business'),
-('OJ202', 2, '35D', 'Economy');
+
+INSERT INTO Bookings (flight_number, passenger_id, booking_date, seat_number, class_type) VALUES
+-- Ahmed Al Marzooqi (ID 1) flies Emirates DXB to EBB
+('EK 730', 1, '2025-10-01 10:00:00', '3K', 'Business'),
+-- Grace Nassuna (ID 2) flies Uganda Airlines EBB to DXB
+('UR 440', 2, '2025-10-05 15:30:00', '21A', 'Economy'),
+-- Jean-Claude Munyaneza (ID 3) flies RwandAir KGL to DXB (First Class)
+('WB 302', 3, '2025-10-10 09:00:00', '1A', 'First'),
+-- Sarah Ochieng (ID 4) flies a regional flight EBB to KGL
+('UR 202', 4, '2025-10-15 11:20:00', '10C', 'Economy'),
+-- David Patel (ID 5) flies flydubai DXB to EBB
+('FZ 637', 5, '2025-10-20 18:00:00', '5A', 'Business'),
+-- Grace Nassuna (ID 2) also flies the regional KGL to EBB (same passenger, different flight)
+('KQ 402', 2, '2025-10-22 14:00:00', '2K', 'Business');
 
 SELECT 
     p.first_name, 
