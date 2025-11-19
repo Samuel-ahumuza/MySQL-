@@ -1,0 +1,56 @@
+CREATE DATABASE UNIVERSITY
+    DEFAULT CHARACTER SET = 'utf8mb4';
+
+    USE UNIVERSITY;
+CREATE TABLE Programme (
+        Prog_name VARCHAR(30) UNIQUE NOT NULL,
+        Prog_ID VARCHAR(8) PRIMARY KEY,
+        Campus CHAR(6) NOT NULL
+        );
+ DROP TABLE Programme;
+CREATE TABLE STUDENT(
+        Regno VARCHAR(8) PRIMARY KEY,
+        Fname VARCHAR(20) NOT NULL CHECK (Fname = LOWER(Fname)),
+        Lname VARCHAR(20) NOT NULL,
+        Course CHAR(4) CHECK (LENGTH(Course)= 4),
+        District CHAR(30) NOT NULL,
+        Date_of_JOIN DATE,
+        Mobileno VARCHAR(15) NOT NULL,
+        Email_Address VARCHAR(30),
+        Fees NUMERIC(10,2),
+        Prog_ID CHAR(8),
+        FOREIGN KEY (Prog_ID) REFERENCES Programme(Prog_ID)
+        );
+        DROP TABLE STUDENT;
+
+
+        INSERT INTO Programme (Prog_name, Prog_ID, Campus)
+        VALUES
+        ('Information Technology', 'BSIT', 'Lubaga'),
+        ('Computer Science', 'BSCS', 'Mukono');
+
+        INSERT INTO STUDENT (Regno, Fname, Lname, Course, District, Date_of_JOIN, Mobileno, Email_Address, Fees, Prog_ID)
+        VALUES
+        ('BSIT/978', 'Peter', 'Okello', 'MSIS', 'Kampala',NULL, '256782845678', 'pokello@gmail.com', 20000, 'BSIT'),
+        ('BSCS/657', 'Mary', 'Nambi', 'MICT', 'Mukono',NULL, '256772770557', 'mnambi@gmail.com', 30000, 'BSCS');
+
+ALTER TABLE STUDENT
+ADD CONSTRAINT CHK_MobilenoLength
+check (Length(Mobileno) = 12);
+
+ALTER TABLE STUDENT
+ADD CONSTRAINT CHK_Email_Address
+CHECK (Email_Address LIKE '%@%');
+
+ALTER TABLE STUDENT
+ADD CONSTRAINT CHK_Fees
+check (Fees>= 10000 and Fees <= 50000); 
+
+ALTER table STUDENT ADD CONSTRAINT CHK_Regno
+check (Regno like 'BSIT%' or Regno like 'BSCS%');
+ALTER TABLE STUDENT ADD CONSTRAINT AC_Prog_ID UNIQUE (Prog_ID);
+ALTER TABLE STUDENT ADD
+COLUMN Hall_Residence VARCHAR(20);
+
+ALTER table STUDENT
+DROP CONSTRAINT CHK_Fees;
