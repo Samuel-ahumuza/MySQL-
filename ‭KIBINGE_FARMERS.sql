@@ -69,3 +69,51 @@ CREATE Table Crop(
                    (301, 1, 201, 2024-01-15, 500, 3, 1500),
                    (302, 2, 202, 2024-02-10, 300, 2.5, 750),
                    (303, 1, 203, 2024-03-05, 150, 4, 600);
+
+CREATE VIEW view2b
+AS 
+SELECT * FROM Crop WHERE Type LIKE 'F%'; 
+
+CREATE VIEW view2c AS
+SELECT
+    FC.Farmer_ID,
+    SUM(ST.Total_Amount) AS Total_Collection
+FROM
+    Sales_transaction AS ST
+JOIN
+    Farmer_crop AS FC
+    ON ST.Farmer_Crop_ID = FC.Farmer_Crop_ID
+GROUP BY
+    FC.Farmer_ID;
+CREATE VIEW view2d
+SELECT 
+F.Name
+FROM Farmer
+JOIN
+    Crop AS C
+ON
+    Farmer.Name = C.Crop_Name;
+
+DROP VIEW view2c;
+CREATE OR REPLACE VIEW view2d AS
+SELECT
+    F.Name AS Farmer_Name,
+    C.Crop_Name
+FROM
+    Farmer_crop AS FC
+JOIN
+    Farmer AS F
+    ON FC.Farmer_ID = F.Farmer_ID
+JOIN
+    Crop AS C
+    ON FC.Crop_ID = C.Crop_ID;
+
+    CREATE VIEW 3a AS
+    SELECT DISTINCT
+    Type 
+    FROM crop
+    ORDER BY Type ASC;
+
+    ALTER  TABLE Farmer ADD COLUMN Email VARCHAR(50);
+
+
