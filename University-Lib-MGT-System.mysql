@@ -59,7 +59,7 @@ CREATE TABLE LOAN (
     Date_of_Issuance DATE NOT NULL,
     Due_Date DATE NOT NULL,
     Return_Date DATE, -- Nullable until returned
-    Fine_Amount DECIMAL(8, 2) DEFAULT 0.00,
+    Fine_Amount DECIMAL(10, 2) DEFAULT 0.00,
     Member_ID VARCHAR(15) NOT NULL, -- FK to MEMBER
     Book_ID VARCHAR(20) NOT NULL, -- FK to BOOK
 
