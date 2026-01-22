@@ -3,7 +3,7 @@ CREATE TABLE MEMBER (
     Member_ID VARCHAR(15) PRIMARY KEY, -- PK, e.g., Student/Staff ID
     Name VARCHAR(100) NOT NULL,
     Address VARCHAR(255),
-    Phone_no VARCHAR(20),
+    Phone_Number VARCHAR(20),
     Email VARCHAR(100) UNIQUE,
     Membership_Type VARCHAR(50) NOT NULL,
     Expiring_Date DATE
