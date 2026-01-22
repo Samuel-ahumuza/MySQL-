@@ -45,7 +45,7 @@ CREATE TABLE EMPLOYER (
 CREATE TABLE CITIZEN (
     Citizen_ID INT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
-    Date_of_Birth DATE,
+    DOB DATE,
     Employment_Status ENUM('Employed', 'Unemployed', 'Self-Employed', 'Student', 'Retired') NOT NULL,
     
     -- Foreign Keys
