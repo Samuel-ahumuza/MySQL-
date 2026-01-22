@@ -13,7 +13,7 @@ CREATE TABLE Customers (
     password_hash VARCHAR(255) NOT NULL, -- Stores securely hashed password (e.g., bcrypt hash)
     phone_number VARCHAR(15),
     address VARCHAR(255),
-    date_of_birth DATE,
+    DOB DATE,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
